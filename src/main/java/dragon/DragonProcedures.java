@@ -6,11 +6,10 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.impl.core.NodeProxy;
 import org.neo4j.kernel.internal.GraphDatabaseAPI;
 import org.neo4j.logging.Log;
-import org.neo4j.procedure.Context;
-import org.neo4j.procedure.Mode;
-import org.neo4j.procedure.Name;
-import org.neo4j.procedure.Procedure;
+import org.neo4j.procedure.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -92,6 +91,25 @@ public class DragonProcedures {
             }
 
         }).start();
+    }
+
+
+
+    @UserFunction
+    public boolean extProp(@Name("node") Node node,
+                           @Name("externalPropertyKey") String externalPropertyKey) {
+
+        // simplistic code ahead,
+        // normally you would do: externalSystem.getValueForNode(node.getId(), externalPropertyKey)
+        Map<String, Boolean> enabledData = new HashMap<>();
+        enabledData.put("a", true);
+        enabledData.put("b", true);
+        enabledData.put("c", true);
+        enabledData.put("d", true);
+        enabledData.put("e", false);
+
+        String key = (String) node.getProperty("id");
+        return enabledData.get(key);
     }
 
 }
